@@ -72,82 +72,12 @@
                 opacity: 0;
             }
         }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .spin-slow {
-            animation: spin 6s linear infinite;
-        }
-
-        /* Envelope Opening Animations */
-        .envelope-flap {
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: top;
-        }
-        .open .envelope-flap {
-            transform: rotateX(180deg);
-            z-index: 10;
-        }
-        .letter-slide {
-            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-        }
-        .open .letter-slide {
-            transform: translateY(-110px) scale(1.02);
-        }
     </style>
 </head>
 <body class="paper-texture min-h-screen selection:bg-accentGold selection:text-vintageGreen relative">
 
-    <!-- Audio Element -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="assets/Ed Sheeran - Perfect.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- Full-Screen Interactive Envelope Overlay -->
-    <div id="welcomeOverlay" class="fixed inset-0 z-[100] bg-vintageGreen/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 transition-opacity duration-700">
-        <div class="absolute w-96 h-96 bg-accentGold/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Envelope Container -->
-        <div id="envelopeWrapper" class="relative w-full max-w-md cursor-pointer group" onclick="openInvitation()">
-            
-            <!-- Letter Pop-up Card -->
-            <div id="letterCard" class="letter-slide relative z-20 bg-cardGreen border border-accentGold/50 p-8 rounded-3xl shadow-2xl text-center transform translate-y-6">
-                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accentGold text-vintageGreen px-4 py-1 rounded-full text-[10px] font-serif uppercase tracking-widest shadow-md">
-                    Official Invitation
-                </div>
-                <span class="text-accentGold text-2xl mb-1 block mt-2">💍</span>
-                <p class="font-serif tracking-[0.2em] uppercase text-xs text-accentGold/80 mb-1">You Are Cordially Invited</p>
-                <h2 class="font-script text-4xl md:text-5xl text-lightGold mb-3">Mariam & Ahmed</h2>
-                <div class="h-[1px] w-24 bg-accentGold/30 mx-auto my-3"></div>
-                <p class="text-xs text-creamPaper/80 mb-6 leading-relaxed">Join us in celebrating our engagement on December 12, 2026 at New Cairo.</p>
-                
-                <button class="w-full bg-gradient-to-r from-accentGold to-[#aa7c11] text-vintageGreen font-serif font-bold text-xs uppercase tracking-[0.2em] py-4 rounded-xl shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-3 cursor-pointer pointer-events-none">
-                    <i class="fa-solid fa-envelope-open-text text-sm"></i> Tap to Open & Play Music 🎶
-                </button>
-            </div>
-
-            <!-- Envelope Pocket & Flap Overlay Frame -->
-            <div class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 opacity-0" id="envelopeVisual">
-                <div class="envelope-flap w-full h-32 bg-[#172519] border-b border-accentGold/40 rounded-t-2xl shadow-inner"></div>
-            </div>
-
-        </div>
-    </div>
-
     <!-- Floating Hearts Container -->
     <div id="hearts-container" aria-hidden="true"></div>
-
-    <!-- Floating Cute Music Player Button -->
-    <div class="fixed bottom-6 left-6 z-50">
-        <button id="musicToggleBtn" onclick="toggleBackgroundMusic()" class="bg-cardGreen/90 border border-accentGold/50 text-accentGold hover:bg-accentGold hover:text-vintageGreen p-3.5 rounded-full shadow-2xl backdrop-blur-md transition-all flex items-center justify-center group relative cursor-pointer">
-            <i id="musicIcon" class="fa-solid fa-music text-lg"></i>
-            <span id="musicLabel" class="absolute left-14 bg-cardGreen/95 border border-accentGold/40 text-creamPaper text-[11px] font-serif tracking-wider px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                Play Ed Sheeran - 'Perfect'
-            </span>
-        </button>
-    </div>
 
     <!-- Notification Toast Modal -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-cardGreen border border-accentGold/40 text-creamPaper px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3">
@@ -270,7 +200,7 @@
         </div>
     </header>
 
-    <!-- Main Content: RSVP & Guest Wishes -->
+    <!-- Main Content: RSVP & Anonymous Guest Wishes -->
     <main class="max-w-3xl mx-auto px-4 py-12 relative z-10">
 
         <!-- RSVP Form Section -->
@@ -327,12 +257,12 @@
             </form>
         </section>
 
-        <!-- Live RSVP Statistics & Guest Feed -->
+        <!-- Live Anonymous RSVP Statistics & Guest Wall -->
         <section class="space-y-8">
             <div class="flex flex-col md:flex-row items-center justify-between bg-cardGreen/50 border border-accentGold/20 rounded-2xl p-6 gap-4">
                 <div>
-                    <h3 class="font-serif text-lg text-accentGold">Celebration Guest List</h3>
-                    <p class="text-xs text-creamPaper/70">See who is joining Mariam & Ahmed on their special day.</p>
+                    <h3 class="font-serif text-lg text-accentGold">Celebration Overview</h3>
+                    <p class="text-xs text-creamPaper/70">Anonymous guest counts and warm wishes.</p>
                 </div>
                 <div class="flex items-center gap-6">
                     <div class="text-center">
@@ -347,10 +277,10 @@
                 </div>
             </div>
 
-            <!-- Guest Wishes Feed -->
+            <!-- Anonymous Guest Wishes Feed -->
             <div class="space-y-4">
                 <h4 class="font-serif text-sm tracking-widest uppercase text-accentGold/90 flex items-center gap-2">
-                    <i class="fa-solid fa-heart text-xs"></i> Guest Wishes & Blessings
+                    <i class="fa-solid fa-heart text-xs"></i> Anonymous Guest Blessings
                 </h4>
                 
                 <div id="wishesContainer" class="space-y-4">
@@ -367,14 +297,80 @@
 
     </main>
 
-    <!-- Footer -->
+    <!-- Footer with Secret Client/Admin Login Button -->
     <footer class="text-center py-12 border-t border-accentGold/10 mt-20 text-xs text-creamPaper/50 relative z-10">
         <p class="font-serif tracking-widest text-accentGold/80 mb-1">MARIAM & AHMED</p>
         <p>Saturday, 12 December 2026 • 99 Compound Nakheel Villa, New Cairo</p>
         <p class="mt-4 text-[10px]">Designed with love for our engagement celebration.</p>
+        <div class="mt-6">
+            <button onclick="openAdminLogin()" class="bg-cardGreen border border-accentGold/30 text-accentGold text-[11px] font-serif tracking-wider px-4 py-2 rounded-lg hover:bg-accentGold hover:text-vintageGreen transition-all cursor-pointer">
+                <i class="fa-solid fa-lock"></i> Client / Admin Dashboard
+            </button>
+        </div>
     </footer>
 
-    <!-- Interactive Audio & Supabase Script -->
+    <!-- Secret Client / Admin Modal -->
+    <div id="adminModal" class="fixed inset-0 z-[200] bg-vintageGreen/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 hidden">
+        <div class="max-w-2xl w-full bg-cardGreen border border-accentGold/40 p-6 md:p-8 rounded-3xl shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-6 border-b border-accentGold/20 pb-4">
+                <div>
+                    <h3 class="font-serif text-lg text-accentGold font-bold">Client RSVP Dashboard</h3>
+                    <p class="text-xs text-creamPaper/70">Full guest list, names, phones, and headcounts (Private view for clients).</p>
+                </div>
+                <button onclick="closeAdminModal()" class="text-accentGold hover:text-lightGold text-xl cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Password Screen -->
+            <div id="adminLoginBox" class="text-center py-8">
+                <p class="text-xs text-creamPaper/80 mb-4 font-serif">Enter password to view full guest details:</p>
+                <div class="flex gap-2 max-w-xs mx-auto">
+                    <input type="password" id="adminPasswordInput" placeholder="Enter password" class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-2.5 text-creamPaper text-sm focus:outline-none focus:border-accentGold">
+                    <button onclick="verifyAdminPassword()" class="bg-accentGold text-vintageGreen font-serif font-bold text-xs uppercase px-5 py-2.5 rounded-xl hover:bg-lightGold transition-all">Login</button>
+                </div>
+            </div>
+
+            <!-- Full Guest Table (Unlocked after password) -->
+            <div id="adminContentBox" class="hidden space-y-4">
+                <div class="grid grid-cols-3 gap-4 bg-deepGreen/60 p-4 rounded-xl border border-accentGold/20 text-center">
+                    <div>
+                        <span id="adminTotalAttending" class="font-serif text-xl font-bold text-accentGold block">0</span>
+                        <span class="text-[10px] text-creamPaper/60 uppercase">Total Attending</span>
+                    </div>
+                    <div>
+                        <span id="adminTotalDeclined" class="font-serif text-xl font-bold text-rose-300 block">0</span>
+                        <span class="text-[10px] text-creamPaper/60 uppercase">Declined</span>
+                    </div>
+                    <div>
+                        <span id="adminTotalSubmissions" class="font-serif text-xl font-bold text-lightGold block">0</span>
+                        <span class="text-[10px] text-creamPaper/60 uppercase">Total Replies</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-accentGold/20 text-accentGold font-serif">
+                                <th class="py-3 px-2">Guest Name</th>
+                                <th class="py-3 px-2">Status</th>
+                                <th class="py-3 px-2">Guests</th>
+                                <th class="py-3 px-2">Phone / Email</th>
+                                <th class="py-3 px-2">Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody" class="divide-y divide-accentGold/10 text-creamPaper/90">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Supabase & App Logic Script -->
     <script type="module">
         import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -382,6 +378,7 @@
         const SUPABASE_ANON_KEY = "sb_publishable_6TPzOFOoX67ndx2RJyUY8A_Ppb6QfDR";
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let cachedRsvps = [];
 
         // --- 1. Floating Hearts Generator ---
         function createHeart() {
@@ -407,69 +404,7 @@
         }
         setInterval(createHeart, 500);
 
-        // --- 2. Envelope Opening & Music Autoplay Trigger ---
-        let isMusicPlaying = false;
-        let isOpening = false;
-
-        window.openInvitation = function() {
-            if (isOpening) return;
-            isOpening = true;
-
-            const audio = document.getElementById('bgMusic');
-            const wrapper = document.getElementById('envelopeWrapper');
-            const overlay = document.getElementById('welcomeOverlay');
-
-            wrapper.classList.add('open');
-
-            if (audio) {
-                audio.volume = 1.0;
-                audio.play().then(() => {
-                    isMusicPlaying = true;
-                    updateMusicUI();
-                    showToast("Now Playing", "Ed Sheeran - 'Perfect' 🎶");
-                }).catch(err => {
-                    console.warn("Audio play prevented:", err);
-                });
-            }
-
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 700);
-            }, 900);
-        }
-
-        window.toggleBackgroundMusic = function() {
-            const audio = document.getElementById('bgMusic');
-            if (!audio) return;
-
-            if (isMusicPlaying) {
-                audio.pause();
-                isMusicPlaying = false;
-                showToast("Music Paused", "Background melody stopped.");
-            } else {
-                audio.play().then(() => {
-                    isMusicPlaying = true;
-                    showToast("Now Playing", "Ed Sheeran - 'Perfect' 🎶");
-                }).catch(() => {});
-            }
-            updateMusicUI();
-        }
-
-        function updateMusicUI() {
-            const btnIcon = document.getElementById('musicIcon');
-            const musicLabel = document.getElementById('musicLabel');
-            if (isMusicPlaying) {
-                btnIcon.className = "fa-solid fa-volume-high text-lg spin-slow text-accentGold";
-                musicLabel.innerText = "Pause Ed Sheeran - 'Perfect'";
-            } else {
-                btnIcon.className = "fa-solid fa-music text-lg";
-                musicLabel.innerText = "Play Ed Sheeran - 'Perfect'";
-            }
-        }
-
-        // --- 3. Calendar / .ics File Generator ---
+        // --- 2. Calendar / .ics File Generator ---
         window.downloadICalendar = function() {
             const title = "Mariam & Ahmed's Engagement Celebration";
             const description = "We are getting engaged! Join us at 99 Compound Nakheel Villa, New Cairo.";
@@ -508,7 +443,7 @@
             showToast("Calendar Downloaded!", "Added to Calendar successfully.");
         };
 
-        // --- 4. Supabase RSVP & Guest Book Logic ---
+        // --- 3. Supabase RSVP & Anonymous Public Wall Logic ---
         document.addEventListener("DOMContentLoaded", () => {
             fetchRsvps();
             setupRealtimeSubscription();
@@ -560,7 +495,7 @@
                 const { error } = await supabase.from('rsvps').insert([rsvpData]);
                 if (error) throw error;
 
-                showToast("RSVP Confirmed!", `Thank you ${name}, your response has been recorded.`);
+                showToast("RSVP Confirmed!", `Thank you, your response has been recorded.`);
                 document.getElementById('rsvpForm').reset();
                 fetchRsvps();
             } catch (error) {
@@ -580,10 +515,14 @@
                     .order('timestamp', { ascending: false });
 
                 if (error) throw error;
-                renderWishes(data || []);
+                cachedRsvps = data || [];
+                renderPublicWall(cachedRsvps);
+                if (!document.getElementById('adminContentBox').classList.contains('hidden')) {
+                    renderAdminTable(cachedRsvps);
+                }
             } catch (err) {
                 console.error("Error fetching RSVPs:", err);
-                renderWishes([]);
+                renderPublicWall([]);
             }
         }
 
@@ -596,7 +535,8 @@
                 .subscribe();
         }
 
-        function renderWishes(rsvps) {
+        // Render Public Wall with ANONYMIZED names
+        function renderPublicWall(rsvps) {
             const container = document.getElementById('wishesContainer');
             const attendingSpan = document.getElementById('attendingCount');
             const wishesSpan = document.getElementById('totalWishesCount');
@@ -625,15 +565,76 @@
                 <div class="bg-cardGreen/60 border border-accentGold/20 rounded-xl p-4 shadow-md transition-all hover:border-accentGold/40">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                         <div class="flex items-center gap-2">
-                            <span class="font-serif text-sm font-bold text-accentGold">${escapeHtml(r.name)}</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full ${r.status === 'Joyfully Accept' ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/50' : 'bg-rose-900/60 text-rose-300 border border-rose-700/50'}">
-                                ${r.status === 'Joyfully Accept' ? 'Attending (' + (r.count || 1) + ')' : 'Declined'}
+                            <span class="font-serif text-sm font-bold text-accentGold">Anonymous Guest</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-700/50">
+                                Attending
                             </span>
                         </div>
                         <span class="text-[10px] text-creamPaper/50">${timeAgo(r.timestamp)}</span>
                     </div>
                     <p class="text-xs text-creamPaper/90 italic">"${escapeHtml(r.message)}"</p>
                 </div>
+            `).join('');
+        }
+
+        // --- 4. Client / Admin Dashboard Functions ---
+        window.openAdminLogin = function() {
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        window.closeAdminModal = function() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        window.verifyAdminPassword = function() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (pass === "121226") {
+                document.getElementById('adminLoginBox').classList.add('hidden');
+                document.getElementById('adminContentBox').classList.remove('hidden');
+                renderAdminTable(cachedRsvps);
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        function renderAdminTable(rsvps) {
+            const tbody = document.getElementById('adminTableBody');
+            const totalAttendingEl = document.getElementById('adminTotalAttending');
+            const totalDeclinedEl = document.getElementById('adminTotalDeclined');
+            const totalSubmissionsEl = document.getElementById('adminTotalSubmissions');
+
+            let attendingHeads = 0;
+            let declinedCount = 0;
+
+            rsvps.forEach(r => {
+                if (r.status === 'Joyfully Accept') {
+                    attendingHeads += Number(r.count || 1);
+                } else {
+                    declinedCount += 1;
+                }
+            });
+
+            totalAttendingEl.innerText = attendingHeads;
+            totalDeclinedEl.innerText = declinedCount;
+            totalSubmissionsEl.innerText = rsvps.length;
+
+            if (rsvps.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-creamPaper/50">No submissions found in database.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = rsvps.map(r => `
+                <tr>
+                    <td class="py-3 px-2 font-bold text-accentGold">${escapeHtml(r.name)}</td>
+                    <td class="py-3 px-2">
+                        <span class="px-2 py-0.5 rounded text-[10px] ${r.status === 'Joyfully Accept' ? 'bg-emerald-900/50 text-emerald-300' : 'bg-rose-900/50 text-rose-300'}">
+                            ${r.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-2">${r.count || 1} guest(s)</td>
+                    <td class="py-3 px-2 text-creamPaper/70">${escapeHtml(r.contact)}</td>
+                    <td class="py-3 px-2 italic text-creamPaper/80">"${escapeHtml(r.message)}"</td>
+                </tr>
             `).join('');
         }
 
