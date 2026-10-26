@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mariam & Ahmed's Engagement</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vintageGreen: '#162218',
+                        deepGreen: '#0f1710',
+                        cardGreen: '#1e2b20',
+                        accentGold: '#d4af37',
+                        lightGold: '#f3e5ab',
+                        creamPaper: '#f9f6ee'
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        script: ['Great Vibes', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #162218;
+            color: #f9f6ee;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .paper-texture {
+            background-image: radial-gradient(rgba(212, 175, 55, 0.06) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+        
+        /* Floating Hearts Animation */
+        .heart-particle {
+            position: fixed;
+            bottom: -20px;
+            color: rgba(212, 175, 55, 0.7);
+            animation: floatUp 7s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) scale(0.6) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.9;
+            }
+            80% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-110vh) translateX(60px) scale(1.3) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-slow {
+            animation: spin 6s linear infinite;
+        }
+
+        /* Envelope Opening Animations */
+        .envelope-flap {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top;
+        }
+        .open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+        .letter-slide {
+            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+        .open .letter-slide {
+            transform: translateY(-110px) scale(1.02);
+        }
+    </style>
+</head>
+<body class="paper-texture min-h-screen selection:bg-accentGold selection:text-vintageGreen relative">
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="assets/Ed Sheeran - Perfect.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Full-Screen Interactive Envelope Overlay -->
+    <div id="welcomeOverlay" class="fixed inset-0 z-[100] bg-vintageGreen/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 transition-opacity duration-700">
+        <div class="absolute w-96 h-96 bg-accentGold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Envelope Container -->
+        <div id="envelopeWrapper" class="relative w-full max-w-md cursor-pointer group" onclick="openInvitation()">
+            
+            <!-- Letter Pop-up Card -->
+            <div id="letterCard" class="letter-slide relative z-20 bg-cardGreen border border-accentGold/50 p-8 rounded-3xl shadow-2xl text-center transform translate-y-6">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accentGold text-vintageGreen px-4 py-1 rounded-full text-[10px] font-serif uppercase tracking-widest shadow-md">
+                    Official Invitation
+                </div>
+                <span class="text-accentGold text-2xl mb-1 block mt-2">💍</span>
+                <p class="font-serif tracking-[0.2em] uppercase text-xs text-accentGold/80 mb-1">You Are Cordially Invited</p>
+                <h2 class="font-script text-4xl md:text-5xl text-lightGold mb-3">Mariam & Ahmed</h2>
+                <div class="h-[1px] w-24 bg-accentGold/30 mx-auto my-3"></div>
+                <p class="text-xs text-creamPaper/80 mb-6 leading-relaxed">Join us in celebrating our engagement on December 12, 2026 at New Cairo.</p>
+                
+                <button class="w-full bg-gradient-to-r from-accentGold to-[#aa7c11] text-vintageGreen font-serif font-bold text-xs uppercase tracking-[0.2em] py-4 rounded-xl shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-3 cursor-pointer pointer-events-none">
+                    <i class="fa-solid fa-envelope-open-text text-sm"></i> Tap to Open & Play Music 🎶
+                </button>
+            </div>
+
+            <!-- Envelope Pocket & Flap Overlay Frame -->
+            <div class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 opacity-0" id="envelopeVisual">
+                <div class="envelope-flap w-full h-32 bg-[#172519] border-b border-accentGold/40 rounded-t-2xl shadow-inner"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Floating Hearts Container -->
+    <div id="hearts-container" aria-hidden="true"></div>
+
+    <!-- Floating Cute Music Player Button -->
+    <div class="fixed bottom-6 left-6 z-50">
+        <button id="musicToggleBtn" onclick="toggleBackgroundMusic()" class="bg-cardGreen/90 border border-accentGold/50 text-accentGold hover:bg-accentGold hover:text-vintageGreen p-3.5 rounded-full shadow-2xl backdrop-blur-md transition-all flex items-center justify-center group relative cursor-pointer">
+            <i id="musicIcon" class="fa-solid fa-music text-lg"></i>
+            <span id="musicLabel" class="absolute left-14 bg-cardGreen/95 border border-accentGold/40 text-creamPaper text-[11px] font-serif tracking-wider px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                Play Ed Sheeran - 'Perfect'
+            </span>
+        </button>
+    </div>
+
+    <!-- Notification Toast Modal -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-cardGreen border border-accentGold/40 text-creamPaper px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-accentGold text-xl"></i>
+        <div>
+            <h4 id="toast-title" class="font-serif font-bold text-sm tracking-wide text-accentGold">Success</h4>
+            <p id="toast-msg" class="text-xs text-creamPaper/80">RSVP submitted successfully!</p>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex flex-col items-center justify-center px-4 py-16 z-10">
+        <div class="absolute w-96 h-96 bg-accentGold/5 rounded-full blur-3xl pointer-events-none -top-20 -left-20"></div>
+        <div class="absolute w-96 h-96 bg-accentGold/5 rounded-full blur-3xl pointer-events-none -bottom-20 -right-20"></div>
+
+        <div class="max-w-md w-full mx-auto text-center z-10 flex flex-col items-center">
+            
+            <p class="font-serif tracking-[0.3em] uppercase text-xs md:text-sm text-accentGold/90 mb-4">
+                Together with their families
+            </p>
+            
+            <h1 class="font-script text-5xl md:text-7xl text-lightGold mb-6 drop-shadow-md">
+                We're getting Engaged!
+            </h1>
+
+            <!-- Photo Booth Strip Frame -->
+            <div class="relative w-64 md:w-72 bg-[#121711] p-3 rounded-xl shadow-2xl border border-accentGold/30 mb-8 transform hover:scale-[1.01] transition-transform duration-500">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-accentGold/20 rounded-full border border-accentGold/40"></div>
+                <div class="flex flex-col gap-2 bg-black p-2 rounded border border-accentGold/20">
+                    <div class="overflow-hidden rounded relative aspect-[1/2.4] bg-zinc-900">
+                        <video 
+                            autoplay 
+                            loop 
+                            muted 
+                            playsinline
+                            class="w-full h-full object-cover filter contrast-110 hover:scale-105 transition-transform duration-700">
+                            <source src="assets/WhatsApp Video 2026-10-25 at 1.55.18 PM.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="mt-3 text-center">
+                    <span class="text-[10px] tracking-widest text-accentGold/60 uppercase font-serif">Dec 12, 2026 • New Cairo</span>
+                </div>
+            </div>
+
+            <!-- Couple Names -->
+            <h2 class="font-script text-4xl md:text-5xl text-accentGold mb-2">
+                Mariam and Ahmed
+            </h2>
+
+            <div class="flex items-center justify-center gap-4 w-full my-4">
+                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent to-accentGold/50"></div>
+                <span class="text-accentGold text-sm">♥</span>
+                <div class="h-[1px] w-16 bg-gradient-to-l from-transparent to-accentGold/50"></div>
+            </div>
+
+            <!-- Date & Location Card -->
+            <div class="bg-cardGreen/70 backdrop-blur-md border border-accentGold/20 rounded-2xl p-6 w-full shadow-xl mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-accentGold/10 p-3 rounded-lg text-accentGold">
+                            <i class="fa-regular fa-calendar-days text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-xs uppercase tracking-wider text-accentGold/80">Date & Time</h3>
+                            <p class="font-medium text-sm text-creamPaper mt-0.5">Saturday, 12 Dec 2026</p>
+                            <p class="text-xs text-creamPaper/70">6:00 PM Onwards</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="bg-accentGold/10 p-3 rounded-lg text-accentGold">
+                            <i class="fa-solid fa-location-dot text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-xs uppercase tracking-wider text-accentGold/80">Location</h3>
+                            <p class="font-medium text-sm text-creamPaper mt-0.5">99 Compound Nakheel Villa</p>
+                            <p class="text-xs text-creamPaper/70">New Cairo, Egypt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-accentGold/10 flex flex-wrap gap-3 justify-center">
+                    <a href="#rsvp" class="bg-accentGold text-vintageGreen font-serif font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl hover:bg-lightGold transition-all shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-envelope-open-text"></i> RSVP Now
+                    </a>
+                    <button onclick="downloadICalendar()" class="bg-cardGreen border border-accentGold/40 text-accentGold font-serif font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-xl hover:bg-accentGold/10 transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-calendar-check text-sm"></i> Mark Your Calendar
+                    </button>
+                    <a href="https://maps.app.goo.gl/UnWEqWCLsTv9tMHp6" target="_blank" class="bg-cardGreen border border-accentGold/40 text-accentGold font-serif font-semibold text-xs uppercase tracking-wider px-5 py-3 rounded-xl hover:bg-accentGold/10 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> Directions
+                    </a>
+                </div>
+            </div>
+
+            <!-- Countdown Timer -->
+            <div class="w-full mb-6">
+                <p class="font-serif text-xs uppercase tracking-[0.2em] text-accentGold/80 mb-3">Countdown to Our Celebration</p>
+                <div id="countdown" class="grid grid-cols-4 gap-3">
+                    <div class="bg-cardGreen/80 border border-accentGold/20 rounded-xl p-3">
+                        <span id="days" class="font-serif text-2xl md:text-3xl font-bold text-accentGold block">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Days</span>
+                    </div>
+                    <div class="bg-cardGreen/80 border border-accentGold/20 rounded-xl p-3">
+                        <span id="hours" class="font-serif text-2xl md:text-3xl font-bold text-accentGold block">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Hours</span>
+                    </div>
+                    <div class="bg-cardGreen/80 border border-accentGold/20 rounded-xl p-3">
+                        <span id="minutes" class="font-serif text-2xl md:text-3xl font-bold text-accentGold block">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Minutes</span>
+                    </div>
+                    <div class="bg-cardGreen/80 border border-accentGold/20 rounded-xl p-3">
+                        <span id="seconds" class="font-serif text-2xl md:text-3xl font-bold text-accentGold block">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Seconds</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content: RSVP & Guest Wishes -->
+    <main class="max-w-3xl mx-auto px-4 py-12 relative z-10">
+
+        <!-- RSVP Form Section -->
+        <section id="rsvp" class="bg-cardGreen/80 backdrop-blur-xl border border-accentGold/30 rounded-3xl p-6 md:p-10 shadow-2xl relative mb-16 overflow-hidden">
+            <div class="absolute -right-20 -bottom-20 w-60 h-60 bg-accentGold/5 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="text-center max-w-lg mx-auto mb-8">
+                <span class="font-serif text-xs tracking-[0.3em] uppercase text-accentGold">Be Our Guest</span>
+                <h2 class="font-script text-4xl md:text-5xl text-lightGold mt-1">Join Our Celebration</h2>
+                <p class="text-sm text-creamPaper/80 mt-2">Please let us know if you will be able to attend by December 1st, 2026.</p>
+            </div>
+
+            <form id="rsvpForm" onsubmit="handleRSVP(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-serif text-xs uppercase tracking-wider text-accentGold mb-2">Full Name *</label>
+                        <input type="text" id="guestName" required placeholder="e.g. Karim Mahmoud" class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-3 text-creamPaper placeholder-creamPaper/30 focus:outline-none focus:border-accentGold transition-colors text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-serif text-xs uppercase tracking-wider text-accentGold mb-2">Attendance Status *</label>
+                        <select id="attendanceStatus" required class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-3 text-creamPaper focus:outline-none focus:border-accentGold transition-colors text-sm">
+                            <option value="Joyfully Accept">Joyfully Accept (Attending)</option>
+                            <option value="Regretfully Decline">Regretfully Decline (Can't make it)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-serif text-xs uppercase tracking-wider text-accentGold mb-2">Number of Guests / Plus Ones</label>
+                        <select id="guestCount" class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-3 text-creamPaper focus:outline-none focus:border-accentGold transition-colors text-sm">
+                            <option value="1">1 Guest (Just Me)</option>
+                            <option value="2">2 Guests (+1)</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests Family</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-serif text-xs uppercase tracking-wider text-accentGold mb-2">Email or Phone (Optional)</label>
+                        <input type="text" id="guestContact" placeholder="For reminders & updates" class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-3 text-creamPaper placeholder-creamPaper/30 focus:outline-none focus:border-accentGold transition-colors text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-serif text-xs uppercase tracking-wider text-accentGold mb-2">Congratulatory Message & Wishes</label>
+                    <textarea id="guestMessage" rows="3" placeholder="Leave a sweet wish for Mariam and Ahmed..." class="w-full bg-deepGreen border border-accentGold/30 rounded-xl px-4 py-3 text-creamPaper placeholder-creamPaper/30 focus:outline-none focus:border-accentGold transition-colors text-sm resize-none"></textarea>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button type="submit" id="submitBtn" class="w-full md:w-auto bg-gradient-to-r from-accentGold to-[#aa7c11] text-vintageGreen font-serif font-bold text-xs uppercase tracking-[0.2em] px-10 py-4 rounded-xl hover:opacity-95 transition-all shadow-xl cursor-pointer">
+                        Confirm RSVP
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Live RSVP Statistics & Guest Feed -->
+        <section class="space-y-8">
+            <div class="flex flex-col md:flex-row items-center justify-between bg-cardGreen/50 border border-accentGold/20 rounded-2xl p-6 gap-4">
+                <div>
+                    <h3 class="font-serif text-lg text-accentGold">Celebration Guest List</h3>
+                    <p class="text-xs text-creamPaper/70">See who is joining Mariam & Ahmed on their special day.</p>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <span id="attendingCount" class="font-serif text-2xl font-bold text-accentGold block">0</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Attending</span>
+                    </div>
+                    <div class="h-8 w-[1px] bg-accentGold/20"></div>
+                    <div class="text-center">
+                        <span id="totalWishesCount" class="font-serif text-2xl font-bold text-lightGold block">0</span>
+                        <span class="text-[10px] uppercase tracking-widest text-creamPaper/60">Wishes</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guest Wishes Feed -->
+            <div class="space-y-4">
+                <h4 class="font-serif text-sm tracking-widest uppercase text-accentGold/90 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-xs"></i> Guest Wishes & Blessings
+                </h4>
+                
+                <div id="wishesContainer" class="space-y-4">
+                    <div class="bg-cardGreen/40 border border-accentGold/10 rounded-xl p-4 animate-pulse">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-serif text-sm font-bold text-accentGold">Loading guest wishes...</span>
+                            <span class="text-[10px] text-creamPaper/40">Just now</span>
+                        </div>
+                        <p class="text-xs text-creamPaper/70">Connecting to guest wall...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-12 border-t border-accentGold/10 mt-20 text-xs text-creamPaper/50 relative z-10">
+        <p class="font-serif tracking-widest text-accentGold/80 mb-1">MARIAM & AHMED</p>
+        <p>Saturday, 12 December 2026 • 99 Compound Nakheel Villa, New Cairo</p>
+        <p class="mt-4 text-[10px]">Designed with love for our engagement celebration.</p>
+    </footer>
+
+    <!-- Interactive Audio & Supabase Script -->
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+        const SUPABASE_URL = "https://lbkbmuuyuriozxebezka.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_6TPzOFOoX67ndx2RJyUY8A_Ppb6QfDR";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- 1. Floating Hearts Generator ---
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            if (!container) return;
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            const icons = ['❤️', '✨', '💛', '💖', '💍'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+            
+            const startLeft = Math.random() * window.innerWidth;
+            const size = Math.floor(Math.random() * 14) + 14; 
+            const duration = Math.random() * 3 + 6; 
+            
+            heart.style.left = `${startLeft}px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        setInterval(createHeart, 500);
+
+        // --- 2. Envelope Opening & Music Autoplay Trigger ---
+        let isMusicPlaying = false;
+        let isOpening = false;
+
+        window.openInvitation = function() {
+            if (isOpening) return;
+            isOpening = true;
+
+            const audio = document.getElementById('bgMusic');
+            const wrapper = document.getElementById('envelopeWrapper');
+            const overlay = document.getElementById('welcomeOverlay');
+
+            wrapper.classList.add('open');
+
+            if (audio) {
+                audio.volume = 1.0;
+                audio.play().then(() => {
+                    isMusicPlaying = true;
+                    updateMusicUI();
+                    showToast("Now Playing", "Ed Sheeran - 'Perfect' 🎶");
+                }).catch(err => {
+                    console.warn("Audio play prevented:", err);
+                });
+            }
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 700);
+            }, 900);
+        }
+
+        window.toggleBackgroundMusic = function() {
+            const audio = document.getElementById('bgMusic');
+            if (!audio) return;
+
+            if (isMusicPlaying) {
+                audio.pause();
+                isMusicPlaying = false;
+                showToast("Music Paused", "Background melody stopped.");
+            } else {
+                audio.play().then(() => {
+                    isMusicPlaying = true;
+                    showToast("Now Playing", "Ed Sheeran - 'Perfect' 🎶");
+                }).catch(() => {});
+            }
+            updateMusicUI();
+        }
+
+        function updateMusicUI() {
+            const btnIcon = document.getElementById('musicIcon');
+            const musicLabel = document.getElementById('musicLabel');
+            if (isMusicPlaying) {
+                btnIcon.className = "fa-solid fa-volume-high text-lg spin-slow text-accentGold";
+                musicLabel.innerText = "Pause Ed Sheeran - 'Perfect'";
+            } else {
+                btnIcon.className = "fa-solid fa-music text-lg";
+                musicLabel.innerText = "Play Ed Sheeran - 'Perfect'";
+            }
+        }
+
+        // --- 3. Calendar / .ics File Generator ---
+        window.downloadICalendar = function() {
+            const title = "Mariam & Ahmed's Engagement Celebration";
+            const description = "We are getting engaged! Join us at 99 Compound Nakheel Villa, New Cairo.";
+            const location = "99 Compound Nakheel Villa, New Cairo, Egypt";
+            const url = "https://maps.app.goo.gl/UnWEqWCLsTv9tMHp6";
+            
+            const startTime = "20261212T160000Z"; 
+            const endTime = "20261212T210000Z";
+            const timestampStr = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+            const icsContent = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//Mariam and Ahmed Engagement//EN",
+                "BEGIN:VEVENT",
+                `UID:engagement-2026-mariam-ahmed@domain.com`,
+                `DTSTAMP:${timestampStr}`,
+                `DTSTART:${startTime}`,
+                `DTEND:${endTime}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}\\n\\nGoogle Maps: ${url}`,
+                `LOCATION:${location}`,
+                `URL:${url}`,
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ].join("\r\n");
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'Mariam_Ahmed_Engagement.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast("Calendar Downloaded!", "Added to Calendar successfully.");
+        };
+
+        // --- 4. Supabase RSVP & Guest Book Logic ---
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchRsvps();
+            setupRealtimeSubscription();
+        });
+
+        window.showToast = function(title, message, isError = false) {
+            const toast = document.getElementById('toast');
+            const tTitle = document.getElementById('toast-title');
+            const tMsg = document.getElementById('toast-msg');
+            const tIcon = document.getElementById('toast-icon');
+
+            tTitle.innerText = title;
+            tMsg.innerText = message;
+            tIcon.className = isError ? "fa-solid fa-circle-exclamation text-red-400 text-xl" : "fa-solid fa-circle-check text-accentGold text-xl";
+            
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 4000);
+        }
+
+        window.handleRSVP = async function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const name = document.getElementById('guestName').value.trim();
+            const status = document.getElementById('attendanceStatus').value;
+            const count = document.getElementById('guestCount').value;
+            const contact = document.getElementById('guestContact').value.trim();
+            const message = document.getElementById('guestMessage').value.trim();
+
+            if (!name) {
+                showToast("Error", "Please enter your full name.", true);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Submitting...";
+
+            const rsvpData = {
+                name: name,
+                status: status,
+                count: parseInt(count),
+                contact: contact || "Not provided",
+                message: message || "Sending our warmest congratulations!",
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const { error } = await supabase.from('rsvps').insert([rsvpData]);
+                if (error) throw error;
+
+                showToast("RSVP Confirmed!", `Thank you ${name}, your response has been recorded.`);
+                document.getElementById('rsvpForm').reset();
+                fetchRsvps();
+            } catch (error) {
+                console.error("Error saving RSVP to Supabase:", error);
+                showToast("Error", "Could not submit RSVP. Please try again.", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Confirm RSVP";
+            }
+        };
+
+        async function fetchRsvps() {
+            try {
+                const { data, error } = await supabase
+                    .from('rsvps')
+                    .select('*')
+                    .order('timestamp', { ascending: false });
+
+                if (error) throw error;
+                renderWishes(data || []);
+            } catch (err) {
+                console.error("Error fetching RSVPs:", err);
+                renderWishes([]);
+            }
+        }
+
+        function setupRealtimeSubscription() {
+            supabase
+                .channel('public:rsvps')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'rsvps' }, payload => {
+                    fetchRsvps();
+                })
+                .subscribe();
+        }
+
+        function renderWishes(rsvps) {
+            const container = document.getElementById('wishesContainer');
+            const attendingSpan = document.getElementById('attendingCount');
+            const wishesSpan = document.getElementById('totalWishesCount');
+
+            let totalAttendees = 0;
+            let totalWishes = 0;
+
+            rsvps.forEach(r => {
+                if (r.status === 'Joyfully Accept') {
+                    totalAttendees += Number(r.count || 1);
+                }
+                if (r.message && r.message.trim() !== '') {
+                    totalWishes += 1;
+                }
+            });
+
+            attendingSpan.innerText = totalAttendees;
+            wishesSpan.innerText = totalWishes;
+
+            if (rsvps.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-creamPaper/50 text-xs italic">No RSVPs yet. Be the first to RSVP!</div>`;
+                return;
+            }
+
+            container.innerHTML = rsvps.map(r => `
+                <div class="bg-cardGreen/60 border border-accentGold/20 rounded-xl p-4 shadow-md transition-all hover:border-accentGold/40">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-serif text-sm font-bold text-accentGold">${escapeHtml(r.name)}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full ${r.status === 'Joyfully Accept' ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/50' : 'bg-rose-900/60 text-rose-300 border border-rose-700/50'}">
+                                ${r.status === 'Joyfully Accept' ? 'Attending (' + (r.count || 1) + ')' : 'Declined'}
+                            </span>
+                        </div>
+                        <span class="text-[10px] text-creamPaper/50">${timeAgo(r.timestamp)}</span>
+                    </div>
+                    <p class="text-xs text-creamPaper/90 italic">"${escapeHtml(r.message)}"</p>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function timeAgo(isoString) {
+            if (!isoString) return 'Recently';
+            const date = new Date(isoString);
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        // --- 5. Countdown Timer Logic ---
+        const eventDate = new Date("December 12, 2026 18:00:00").getTime();
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = `<div class="col-span-4 text-center font-serif text-accentGold font-bold text-lg">The celebration has begun!</div>`;
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
